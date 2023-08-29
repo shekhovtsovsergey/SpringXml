@@ -6,19 +6,17 @@ import lombok.RequiredArgsConstructor;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 @RequiredArgsConstructor
 public class QuestionRepositoryImpl implements QuestionRepository{
 
-    private final Map<Long,Question> repository = new HashMap<>();
+    private final List<Question> repository = new ArrayList<>();
     private final String file;
-    private Long counter= 0L;
 
-//list refactor
     @Override
-    public Map<Long, Question> loadCsv() {
+    public List<Question> loadCsv() {
         try (BufferedReader reader =
                      new BufferedReader(
                              new InputStreamReader(getClass().getResourceAsStream("/" + file)))) {
@@ -26,9 +24,8 @@ public class QuestionRepositoryImpl implements QuestionRepository{
                 String s = reader.readLine();
                 String[] arr = s.split(";");
                 Question question = new Question(arr[0],arr[1]);
-                repository.put(counter++, question);
+                repository.add(question);
             }
-
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -37,9 +34,8 @@ public class QuestionRepositoryImpl implements QuestionRepository{
 
     @Override
     public void print() {
-        for (Map.Entry<Long, Question> entry : repository.entrySet()) {
-            System.out.println("Ключ: " + entry.getKey() + ", Вопрос: " + entry.getValue().getQuestion() + ", Ответ: " + entry.getValue().getAnswer()));
+        for (Question question : repository) {
+            System.out.println("Вопрос: " + question.getQuestion() + ", Ответ: " + question.getAnswer());
         }
-
     }
 }
